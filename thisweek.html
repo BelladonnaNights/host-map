@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>This Week — Belladonna Nights</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Josefin+Sans:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #08050e;
+      --surface: #100d18;
+      --surface-dim: #0c0a14;
+      --border: rgba(180, 130, 200, 0.12);
+      --border-bright: rgba(201, 169, 110, 0.3);
+      --gold: #c9a96e;
+      --gold-dim: #4a3d28;
+      --rose: #c47a95;
+      --text: #ede8f5;
+      --text2: #a090b8;
+      --text3: #6a5a7a;
+      --text-ghost: #2e2840;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 0%, rgba(180, 100, 160, 0.06) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 100%, rgba(100, 60, 160, 0.05) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 2.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeDown 0.9s ease forwards 0.15s;
+    }
+
+    .eyebrow {
+      font-size: 0.55rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--rose);
+      opacity: 0.65;
+      margin-bottom: 0.5rem;
+      font-weight: 200;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.9rem, 6vw, 2.8rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      line-height: 1;
+      text-shadow: 0 0 50px rgba(201, 169, 110, 0.15);
+    }
+
+    .header-rule {
+      width: 200px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,169,110,0.3), rgba(196,122,149,0.2), transparent);
+      margin: 0.9rem auto 0;
+    }
+
+    /* ── DAY BLOCKS ── */
+    .week-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .day-block {
+      border-radius: 12px;
+      overflow: hidden;
+      opacity: 0;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .day-block.has-gigs {
+      background: var(--surface);
+      border-color: var(--border);
+    }
+
+    .day-block.has-gigs::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.45;
+    }
+
+    .day-block.empty {
+      background: var(--surface-dim);
+      border-color: rgba(180, 130, 200, 0.06);
+    }
+
+    /* today highlight */
+    .day-block.today {
+      border-color: rgba(201, 169, 110, 0.28);
+    }
+
+    .day-block.today::before {
+      opacity: 0.7;
+    }
+
+    .day-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.1rem 0.6rem;
+    }
+
+    .day-name {
+      font-size: 0.62rem;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    .day-block.has-gigs .day-name { color: var(--gold); }
+    .day-block.today .day-name    { color: var(--gold); }
+    .day-block.empty .day-name    { color: var(--text-ghost); }
+
+    .day-date {
+      font-size: 0.54rem;
+      letter-spacing: 0.2em;
+      font-weight: 200;
+    }
+
+    .day-block.has-gigs .day-date { color: var(--text3); }
+    .day-block.empty .day-date    { color: var(--text-ghost); }
+
+    .today-pill {
+      font-size: 0.45rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 0.18rem 0.55rem;
+      border: 1px solid rgba(201, 169, 110, 0.35);
+      color: var(--gold);
+      border-radius: 20px;
+      background: rgba(201, 169, 110, 0.06);
+      font-weight: 300;
+    }
+
+    /* ── GIG ENTRIES ── */
+    .gig-entries {
+      padding: 0 1.1rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .gig-entry {
+      font-size: 0.82rem;
+      color: var(--text);
+      line-height: 1.55;
+      padding-left: 0.8rem;
+      border-left: 1px solid rgba(201, 169, 110, 0.2);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── EMPTY DAY ── */
+    .empty-label {
+      padding: 0 1.1rem 0.75rem;
+      font-size: 0.52rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--text-ghost);
+      font-weight: 200;
+    }
+
+    /* ── FOOTER ── */
+    .page-footer {
+      text-align: center;
+      margin-top: 1.8rem;
+      font-size: 0.48rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text3);
+      opacity: 0;
+      font-weight: 200;
+      animation: fadeDown 0.9s ease forwards 1.2s;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <header class="page-header">
+      <p class="eyebrow">Belladonna Nights</p>
+      <h1 class="page-title">This Week</h1>
+      <div class="header-rule"></div>
+    </header>
+
+    <div class="week-list" id="weekList">
+      <div style="text-align:center;padding:2rem;font-size:0.6rem;letter-spacing:0.3em;color:#2e2840;text-transform:uppercase;">Loading...</div>
+    </div>
+
+    <p class="page-footer">Belladonna Audio Alchemies ✦ Live Every Night</p>
+
+  </div>
+
+  <script>
+    const SHEETS_KEY    = 'AIzaSyACMjXQCXjVo75hbMXtag_JctR4SoX70So';
+    const WOTD_SHEET_ID = '1HeSQXaLhwvmvhm_Z4SE_CFrFXoNT4Umd0Dtg-kqXWto';
+    const TAB_NAME      = 'Sheet1';
+
+    // Build array of next 7 days starting today
+    function getWeekDates() {
+      const days = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date();
+        d.setDate(d.getDate() + i);
+        const mm   = String(d.getMonth() + 1).padStart(2, '0');
+        const dd   = String(d.getDate()).padStart(2, '0');
+        const yyyy = d.getFullYear();
+        days.push({
+          key: `${mm}-${dd}-${yyyy}`,
+          isToday: i === 0,
+          label: i === 0
+            ? 'Tonight'
+            : d.toLocaleDateString('en-US', { weekday: 'long' }),
+          dateStr: d.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }).toUpperCase()
+        });
+      }
+      return days;
+    }
+
+    async function fetchWeek() {
+      const list = document.getElementById('weekList');
+      try {
+        const url  = `https://sheets.googleapis.com/v4/spreadsheets/${WOTD_SHEET_ID}/values/${encodeURIComponent(TAB_NAME)}?key=${SHEETS_KEY}`;
+        const res  = await fetch(url);
+        const data = await res.json();
+        if (data.error) throw new Error(data.error.message);
+
+        const rows  = data.values || [];
+        const week  = getWeekDates();
+
+        list.innerHTML = week.map((day, idx) => {
+          // Find matching row in sheet
+          const row     = rows.slice(1).find(r => (r[0] || '').trim() === day.key);
+          const rawGigs = row && row[2] ? row[2].trim() : '';
+          const gigs    = rawGigs
+            ? rawGigs.split('\n').map(g => g.trim()).filter(Boolean)
+            : [];
+
+          const hasGigs  = gigs.length > 0;
+          const blockClass = `day-block ${hasGigs ? 'has-gigs' : 'empty'}${day.isToday ? ' today' : ''}`;
+          const delay    = 0.3 + idx * 0.08;
+
+          const gigsHtml = hasGigs
+            ? `<div class="gig-entries">${gigs.map(g => `<div class="gig-entry">${g}</div>`).join('')}</div>`
+            : `<div class="empty-label">Nothing scheduled</div>`;
+
+          return `
+            <div class="${blockClass}" style="animation:fadeUp 0.6s ease forwards ${delay}s;">
+              <div class="day-header">
+                <span class="day-name">${day.label}</span>
+                <span style="display:flex;align-items:center;gap:0.5rem;">
+                  ${day.isToday ? '<span class="today-pill">Today</span>' : ''}
+                  <span class="day-date">${day.dateStr}</span>
+                </span>
+              </div>
+              ${gigsHtml}
+            </div>`;
+        }).join('');
+
+      } catch(e) {
+        list.innerHTML = `<div style="text-align:center;padding:2rem;font-size:0.6rem;letter-spacing:0.2em;color:#c47a95;">Couldn't load schedule — ${e.message}</div>`;
+      }
+    }
+
+    fetchWeek();
+  </script>
+</body>
+</html>
