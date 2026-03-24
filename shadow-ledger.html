@@ -399,7 +399,7 @@
     // ── CONFIG — same credentials as your HQ site ──
     const SHEETS_KEY = "AIzaSyACMjXQCXjVo75hbMXtag_JctR4SoX70So";
     const SHEET_ID   = "1-MkZoNKkPqjAoJggahKiUsDUgjUhMTkoQ8rUBG4W-w0";
-    const TAB_NAME   = "LIVE_MAP"; // exact tab name
+    const TAB_NAME   = "Sheet1"; // same tab as HQ
 
     // ── Live clock ──
     function updateClock() {
@@ -428,14 +428,14 @@
           return;
         }
 
-        // Normalise headers — expects: codename | location | status
+        // Columns: host_name | status | sign_in_time | paid | location
         const headers = rows[0].map(x => x.toLowerCase().trim());
-        const ci = headers.indexOf('codename');
-        const li = headers.indexOf('location');
+        const ni = headers.indexOf('host_name');
         const si = headers.indexOf('status');
+        const li = headers.indexOf('location');
 
-        // Only show rows where status === 'active' (case-insensitive)
-        const active = rows.slice(1).filter(r => (r[si] || '').toLowerCase().trim() === 'active');
+        // Only show rows where status === 'ON' — same trigger as HQ
+        const active = rows.slice(1).filter(r => (r[si] || '').toUpperCase().trim() === 'ON');
 
         if (!active.length) {
           list.innerHTML = `
@@ -450,7 +450,7 @@
         list.innerHTML = active.map((r, i) => `
           <div class="deployment" style="animation:fadeSlideRight 0.6s ease forwards ${0.1 + i * 0.2}s; opacity:0;">
             <div class="deployment-left">
-              <span class="codename">${(r[ci] || '—').toUpperCase()}</span>
+              <span class="codename">${(r[ni] || '—').toUpperCase()}</span>
               <div class="location-wrap">
                 <span class="at-symbol">AT ///</span>
                 <span class="location">${r[li] || '—'}</span>
