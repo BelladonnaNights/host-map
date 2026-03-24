@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tonight — Belladonna Nights</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Josefin+Sans:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #08050e;
+      --surface: #100d18;
+      --border: rgba(180, 130, 200, 0.12);
+      --border-bright: rgba(201, 169, 110, 0.35);
+      --gold: #c9a96e;
+      --gold-dim: #7a6340;
+      --rose: #c47a95;
+      --rose-dim: rgba(196, 122, 149, 0.12);
+      --text: #ede8f5;
+      --text2: #a090b8;
+      --text3: #6a5a7a;
+      --live: #3aaa6a;
+      --live-dim: rgba(58, 170, 106, 0.1);
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      letter-spacing: 0.04em;
+      overflow-x: hidden;
+    }
+
+    /* Atmosphere */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 0%, rgba(180, 100, 160, 0.07) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 100%, rgba(100, 60, 160, 0.06) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fadeDown 0.9s ease forwards 0.2s;
+    }
+
+    .eyebrow {
+      font-size: 0.58rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--rose);
+      opacity: 0.7;
+      margin-bottom: 0.6rem;
+      font-weight: 200;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 7vw, 3.2rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      line-height: 1;
+      text-shadow: 0 0 60px rgba(201, 169, 110, 0.18);
+    }
+
+    .date-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-top: 0.6rem;
+      font-weight: 200;
+    }
+
+    .header-rule {
+      width: 100%;
+      max-width: 320px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,169,110,0.3), rgba(196,122,149,0.25), transparent);
+      margin: 1rem auto 0;
+    }
+
+    /* ── GIG LIST ── */
+    .gig-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.5s;
+    }
+
+    .gig-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.3rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .gig-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.5;
+    }
+
+    .gig-card:hover {
+      border-color: rgba(201, 169, 110, 0.28);
+      transform: translateY(-1px);
+    }
+
+    .gig-text {
+      font-size: 0.92rem;
+      color: var(--text);
+      line-height: 1.6;
+      letter-spacing: 0.04em;
+    }
+
+    /* ornament between multiple gigs in a card */
+    .gig-divider {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin: 0.6rem 0;
+      opacity: 0.25;
+    }
+    .gig-divider::before,
+    .gig-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gold);
+    }
+    .gig-divider-sym {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.7rem;
+      color: var(--gold);
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.5s;
+    }
+
+    .empty-sym {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-style: italic;
+      color: var(--gold);
+      opacity: 0.35;
+      margin-bottom: 1rem;
+    }
+
+    .empty-title {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.7rem;
+    }
+
+    .empty-sub {
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      color: var(--text3);
+      line-height: 2;
+      font-weight: 200;
+    }
+
+    /* ── FOOTER ── */
+    .page-footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.5rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text3);
+      opacity: 0;
+      font-weight: 200;
+      animation: fadeUp 0.9s ease forwards 1s;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <header class="page-header">
+      <p class="eyebrow">Belladonna Nights</p>
+      <h1 class="page-title">Tonight</h1>
+      <p class="date-label" id="dateLabel">—</p>
+      <div class="header-rule"></div>
+    </header>
+
+    <div id="content"></div>
+
+    <p class="page-footer">Belladonna Audio Alchemies ✦ Live Every Night</p>
+
+  </div>
+
+  <script>
+    const SHEETS_KEY    = 'AIzaSyACMjXQCXjVo75hbMXtag_JctR4SoX70So';
+    const WOTD_SHEET_ID = '1HeSQXaLhwvmvhm_Z4SE_CFrFXoNT4Umd0Dtg-kqXWto';
+    const TAB_NAME      = 'Sheet1';
+
+    // Format today's date for display and matching
+    const now   = new Date();
+    const mm    = String(now.getMonth() + 1).padStart(2, '0');
+    const dd    = String(now.getDate()).padStart(2, '0');
+    const yyyy  = now.getFullYear();
+    const today = `${mm}-${dd}-${yyyy}`;
+
+    // Friendly display date e.g. "Monday, March 23"
+    document.getElementById('dateLabel').textContent = now.toLocaleDateString('en-US', {
+      weekday: 'long', month: 'long', day: 'numeric'
+    }).toUpperCase();
+
+    async function fetchGigs() {
+      const content = document.getElementById('content');
+      try {
+        const url  = `https://sheets.googleapis.com/v4/spreadsheets/${WOTD_SHEET_ID}/values/${encodeURIComponent(TAB_NAME)}?key=${SHEETS_KEY}`;
+        const res  = await fetch(url);
+        const data = await res.json();
+        if (data.error) throw new Error(data.error.message);
+
+        const rows  = data.values || [];
+        const match = rows.slice(1).find(r => (r[0] || '').trim() === today);
+
+        // Column C (index 2) holds the gigs — may contain \n line breaks
+        const rawGigs = match && match[2] ? match[2].trim() : '';
+
+        if (!rawGigs) {
+          content.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-sym">✦</div>
+              <div class="empty-title">Nothing Scheduled Tonight</div>
+              <div class="empty-sub">Check back soon — the night<br>fills up fast.</div>
+            </div>`;
+          return;
+        }
+
+        // Split on newline (Cmd+Return in Sheets produces \n)
+        const gigs = rawGigs.split('\n').map(g => g.trim()).filter(Boolean);
+
+        // Render each gig as its own card
+        content.innerHTML = `<div class="gig-list">${
+          gigs.map((gig, i) => `
+            <div class="gig-card" style="animation:fadeUp 0.6s ease forwards ${0.5 + i * 0.12}s; opacity:0;">
+              <p class="gig-text">${gig}</p>
+            </div>
+          `).join('')
+        }</div>`;
+
+      } catch(e) {
+        content.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-sym">✦</div>
+            <div class="empty-title">Couldn't Load Tonight</div>
+            <div class="empty-sub">${e.message}</div>
+          </div>`;
+      }
+    }
+
+    fetchGigs();
+  </script>
+</body>
+</html>
