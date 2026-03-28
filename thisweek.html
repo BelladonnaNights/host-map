@@ -276,7 +276,11 @@
         const rows  = data.values || [];
         const week  = getWeekDates();
 
-        list.innerHTML = week.map((day, idx) => {
+        list.innerHTML = week.filter(day => {
+          const row     = rows.slice(1).find(r => (r[0] || '').trim() === day.key);
+          const rawGigs = row && row[2] ? row[2].trim() : '';
+          return rawGigs.split('\n').map(g => g.trim()).filter(Boolean).length > 0 || day.isToday;
+        }).map((day, idx) => {
           // Find matching row in sheet
           const row     = rows.slice(1).find(r => (r[0] || '').trim() === day.key);
           const rawGigs = row && row[2] ? row[2].trim() : '';
